@@ -82,11 +82,12 @@
             <button class="btn waves-effect waves-light col s12 red darken-4">Login</button>
           </div>
         </div>
+        <p class="center">Lupa Password? <a href="http://reset.iamprima.com">Klik Disini</a></p><hr>
+        <p class="center">Belum Punya Akun?</p>
         <div class="row">
-			<div class="col s12">
-				<p>Belum Punya Akun ?</p>
-				<span class="btn yellow darken-4 col s12">Daftar Sekarang</span>
-			</div>
+          <div class="col s12">
+            <span class="btn yellow darken-4 col s12">Daftar Sekarang</span>
+          </div>
         </div>
       </form>
     </div>
