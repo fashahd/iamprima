@@ -83,6 +83,60 @@ class Dashboard extends MY_Controller {
 	}
 	
 	function showHightlight($username,$now,$groupID = NULL){
+		$role_type	= $this->session->userdata("sessRoleType");
+		if($role_type == "ATL"){
+			$highlight = $this->AtletHighLight($username,$now);
+		}else{
+			$highlight = $this->ModuleHighLight($username,$now,$groupID);
+		}
+	}
+
+	function AtletHighLight($username,$now){
+		$highlight = $this->ModelUsers->getAtletHighLight($username,$now);
+		if($highlight){
+			list($wellness_date,$value_wellness)=$highlight;
+
+			if($value_wellness <= 59){
+				$wellness = "#FF0000";
+			}elseif($value_wellness >= 60 && $value_wellness <= 69) {
+				$wellness = "#FF9D00";
+			}elseif($value_wellness >= 70 && $value_wellness <= 79){
+				$wellness = "#E1FF00";
+			}elseif($value_wellness >= 80 && $value_wellness <= 89){
+				$wellness = "#9BFF77";
+			}else{
+				$wellness = "#00CE25";
+			}
+			$ket = "Wellness Anda $value_wellness Points";	
+		}else{
+			$wellness_date = $now;
+			$wellness = "#607D8B";
+			$ket = "Anda Belum Mengisi Wellness, <a href='".base_url()."./createWellness'>Klik Disini</a>";
+		}
+
+		$day 	= date("l", strtotime($wellness_date));
+		$date 	= date("D, d M Y", strtotime($wellness_date));
+
+		$ret = '
+			<div id="flight-card" class="card">
+				<div class="card-header cyan">
+					<div class="card-title">
+						<h4 class="flight-card-title">Wellness Today</h4>
+						<p class="flight-card-date">'.$day.', '.$date.'</p>
+					</div>
+				</div>
+				<div class="card-content white">
+					<div class="row flight-state-wrapper center">
+						<i class="mdi-action-favorite" style="font-size:150px;color:'.$wellness.'"></i>
+						<p>'.$ket.'</p>
+					</div>
+				</div>
+			</div>
+		';
+		echo $ret;
+	}
+
+	function ModuleHighLight($username,$now,$groupID = NULL){		
 		$highlight 	= $this->ModelUsers->getWellnessHighlight($username,$now,$groupID);
 		$optGroup	= $this->selection->getOptGroup($username);
 		
@@ -143,5 +197,6 @@ class Dashboard extends MY_Controller {
 		';
 		
 		echo $ret;
+		return;
 	}
 }

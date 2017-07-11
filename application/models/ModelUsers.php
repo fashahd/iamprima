@@ -1,6 +1,20 @@
 <?php
 class ModelUsers extends CI_Model {
 	
+	function getAtletHighLight($username,$now){
+		$sql 	= "SELECT wellness_date, value_wellness FROM users WHERE username = '$username' AND wellness_date = '$now'";
+		$query 	= $this->db->query($sql);
+		if($query->num_rows()>0){
+			$row = $query->row();
+			$wellness_date 	= $row->wellness_date;
+			$value_wellness = $row->value_wellness;
+
+			return array($wellness_date,$value_wellness); 
+		}else{
+			return false;
+		}
+	}
+
 	function getWellnessHighlight($username,$now,$groupID = NULL){
 		if(isset($groupID) && $groupID !='ALL'){
 			$sql = " select a.*,ifnull(b.total_cidera,0) as total_cidera,NOW() as last_update"
