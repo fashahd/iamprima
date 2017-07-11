@@ -86,7 +86,9 @@
         <p class="center">Belum Punya Akun?</p>
         <div class="row">
           <div class="col s12">
-            <span class="btn yellow darken-4 col s12">Daftar Sekarang</span>
+            <a href="<?php echo base_url()?>register">
+              <span class="btn yellow darken-4 col s12">Daftar Sekarang</span>
+            </a>
           </div>
         </div>
       </form>

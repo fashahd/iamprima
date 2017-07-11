@@ -17,6 +17,36 @@ class Login extends MY_Controller {
 		$this->load->view("form");
 	}
 	
+	function register(){
+		$this->load->view("register_form");
+	}
+
+	function createUser(){
+		$name 			= $_POST['name'];
+        $username 		= $_POST['username'];
+		$licence_code 	= $_POST['licence'];
+        $password 		= $_POST['password'];
+        $provinsi 		= $_POST['provinsi'];
+        $birth 			= $_POST['birth'];
+        $gender			= $_POST['gender'];
+		$email 			= $_POST['email'];
+        $device_id 		= $this->detectDevice();
+        $device_name 	= $this->detectDevice();
+		
+		$data = array($name,$username,$licence_code,$device_id,$device_name,$password,$provinsi,$birth,$gender,$email);
+		
+		$save = $this->ModelLogin->createUser($data);
+		
+		if($save == "regist_success"){			
+			$this->ModelActivityUser->setActivityUser($username,8,16);
+		}else{
+			$this->ModelActivityUser->setActivityUser($username,11,16);
+		}
+		
+		echo $save;
+		return;
+	}
+	
 	function validation(){
 		$username	= $_POST["username"];
 		$password	= $_POST["password"];
@@ -70,5 +100,23 @@ class Login extends MY_Controller {
         $this->session->unset_userdata('sessRoleType');
         $this->session->unset_userdata('sessGroupID');
         redirect('login/form','refresh');
+	}
+	
+	function detectDevice(){
+		$userAgent = $_SERVER["HTTP_USER_AGENT"];
+		$devicesTypes = array(
+			"computer" => array("msie 10", "msie 9", "msie 8", "windows.*firefox", "windows.*chrome", "x11.*chrome", "x11.*firefox", "macintosh.*chrome", "macintosh.*firefox", "opera"),
+			"tablet"   => array("tablet", "android", "ipad", "tablet.*firefox"),
+			"mobile"   => array("mobile ", "android.*mobile", "iphone", "ipod", "opera mobi", "opera mini"),
+			"bot"      => array("googlebot", "mediapartners-google", "adsbot-google", "duckduckbot", "msnbot", "bingbot", "ask", "facebook", "yahoo", "addthis")
+		);
+		foreach($devicesTypes as $deviceType => $devices) {  
+			foreach($devices as $device) {
+				if(preg_match("/" . $device . "/i", $userAgent)) {
+					$deviceName = $device;
+				}
+			}
+		}
+		return ucfirst($deviceName);
 	}
 }

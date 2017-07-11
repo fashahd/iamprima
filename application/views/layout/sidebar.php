@@ -94,7 +94,9 @@
                 <li class="user-details black darken-4">
                     <div class="row" style="margin-left:-20px">
                         <div class="col col s5" style="margin-left:20px">
-                            <img src="<?php echo $gambar?>" alt="" class="circle responsive-img valign profile-image">
+                            <a href="<?php echo base_url()?>account">
+                                <img src="<?php echo $gambar?>" alt="" class="circle responsive-img valign profile-image">
+                            </a>
                         </div>
                         <div class="col col s12 m12" style="background:rgba(0,0,0,0.4);margin-top:15px;margin-bottom:-15px">
                             <ul id="profile-dropdown" class="dropdown-content">
