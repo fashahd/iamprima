@@ -115,7 +115,7 @@ class Dashboard extends MY_Controller {
 		}
 
 		$day 	= date("l", strtotime($wellness_date));
-		$date 	= date("D, d M Y", strtotime($wellness_date));
+		$date 	= date("d M Y", strtotime($wellness_date));
 
 		$ret = '
 			<div id="flight-card" class="card">
