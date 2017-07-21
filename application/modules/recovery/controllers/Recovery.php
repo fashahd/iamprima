@@ -125,7 +125,7 @@ class Recovery extends MY_controller {
 		}else{
 			if($role_type == "CHC"){$groupID = $group_id;}else{$groupID = $this->session->userdata("pickGroupID");}
 			$labelAtlet	= $this->ModelSelect->optAtlet($groupID,$atletID);
-			$labelGroup = $this->ModelSelect->optGroup($username,$groupID);
+			$labelGroup = "onClick='changeGroup()'";
 			$listGroup 	= $this->ModelSelect->getGroup($username);
 		}
 		
@@ -146,7 +146,7 @@ class Recovery extends MY_controller {
 
 	function monotonyTable($atletID,$month,$year){
 		$role_type	= $this->session->userdata("sessRoleType");
-		$monotonyData	= $this->ModelMonotony->getMonotony($atletID,$month,$year);
+		$monotonyData	= $this->ModelRecovery->getMonotony($atletID,$month,$year);
 		
 		$selection 	= new Selection();
 		$bulan		= $selection->month2Ind($month);
@@ -158,41 +158,22 @@ class Recovery extends MY_controller {
 						</tr></tbody>";
 		if($monotonyData){
 			foreach ($monotonyData as $key) {
-				$created_dttm	 = $key->created_dttm;
-				$user_id		 = $key->created_user_id;
-				$monotonyID 	 = $key->monotonyID;
-				$startDay		 = $key->monotonyStartDttm;
-				$endDay			 = $key->monotonyEndDttm;
-				$date 			 = date("d M Y H:i:s",strtotime($created_dttm));
+				$startDay		 = $key->start_date;
+				$endDay			 = $key->end_date;
 				$start 			 = date("d M Y",strtotime($startDay));
 				$end 			 = date("d M Y",strtotime($endDay));
-				
-				$sql	= $this->db->query("SELECT name FROM users WHERE username = '$user_id'");
-				if($sql->num_rows()>0){
-					$row		= $sql->row();
-					$created_user_nm	= $row->name;
-				}else{
-					$created_user_nm = "";
-				}
-				
-				$query	= $this->db->query(" SELECT SUM(monotonyVolume*monotonyIntensity) as monotonyPerDay FROM master_monotony_detail"
-										 . " WHERE monotonyID = '$monotonyID' group by monotonyID");
-				if($query->num_rows()>0){
-					$row	= $query->row();
-					$monotonyPerDay = $row->monotonyPerDay;
-				}else{
-					$monotonyPerDay	= 0;
-				}
+				$weekly 		 = $key->weekly;
+				$weeklyID 		 = $key->uid;
+
+				$loadWeekly 	 = $this->ModelRecovery->getLoadWeek($weeklyID,$atletID);
 				
 				$ret .= "
-					<tr id='data_$monotonyID'>
+					<tr>
 						<tr>
 							<td style='font-weight:bold' colspan='2'>
-								<a href='#' onClick='goToDataRecovery(\"$monotonyID\")'>$start - $end</a>
+								<span style='cursor:pointer' onClick='goToRecoveryData(\"$weeklyID\")'>$start - $end</span>
 							</td>
-							<td style='font-weight:bold'>
-								$monotonyPerDay
-							</td>
+							<td>$loadWeekly</td>
 						</tr>
 					</tr>
 				";
@@ -210,6 +191,12 @@ class Recovery extends MY_controller {
 		return true;
 	}
 
+	function setWeek(){
+		$week = $_POST["week"];
+		$this->session->set_userdata("sessWeek",$week);
+		return true;
+	}
+
 	function recoveryTable(){
 		$monotonyID = $this->session->userdata("monotonyID");
 		$username	= $this->session->userdata("sessUsername");
@@ -220,8 +207,22 @@ class Recovery extends MY_controller {
 		$group_id	= $this->session->userdata("sessGroupID");
 		$atletID 	= $this->session->userdata("sessAtlet");
 		$atletInfo	= $this->ModelUsers->getAtletInfo($atletID);
-		list($atletName,$atletID,$atletGroup,$atletEvent,$atletPic,$atletWellnessValue,$atletWellnessDate,$group_cat) = $atletInfo;
+		list($atletName,$atletID,$atletGroup,$atletEvent,$atletPic,$atletWellnessValue,$atletWellnessDate) = $atletInfo;
 		
+		
+		if($role_type == "ATL"){
+			$labelAtlet	= $atletName;
+			$labelGroup = "";
+		}else{
+			if($role_type == "CHC"){$groupID = $group_id;}else{$groupID = $this->session->userdata("pickGroupID");}
+			$labelAtlet	= $this->ModelSelect->optAtlet($groupID,$atletID);
+			$labelGroup = "onClick='changeGroup()'";
+			$listGroup 	= $this->ModelSelect->getGroup($username);
+		}
+		
+		$week = $this->session->userdata("sessWeek");
+		$data['labelAtlet'] = $labelAtlet;
+		$data['labelGroup'] = $labelGroup;
 		$data["gambar"]		= $gambar;
 		$data["name"] 		= $name;
 		$data["username"] 	= $username;
@@ -235,9 +236,14 @@ class Recovery extends MY_controller {
 		$data['atletWellnessValue'] = $atletWellnessValue;
 		$data['atletWellnessDate']  = $atletWellnessDate;
 		$data["module"] 	= "Recovery Management";
-		$data["recoveryData"] 	= $this->ModelRecovery->getRecovery($monotonyID,$group_cat);
+		$data["recoveryTable"] 	= $this->showrecoveryTable($week);
 		$data["pages"]			= "recoveryTable";
 		$this->load->view("layout/sidebar",$data);
+	}
+
+	function showrecoveryTable($week){
+		$listWeek = $this->ModelSelect->listWeekByID($week);
+		list($week,$start_date,$end_date,$year)=$listWeek;
 	}
 	
 	function recoveryDetail(){
@@ -444,5 +450,73 @@ class Recovery extends MY_controller {
 		';
 		
 		echo $modal;
+	}
+
+	function createRecovery(){
+		$username	= $this->session->userdata("sessUsername");
+		$name		= $this->session->userdata("sessName");
+		$gambar		= $this->session->userdata("sessGambar");
+		$role_type	= $this->session->userdata("sessRoleType");
+		$role_name	= $this->session->userdata("sessRoleName");
+		$group_id	= $this->session->userdata("sessGroupID");
+		$data["gambar"]		= $gambar;
+		$data["name"] 		= $name;
+		$data["username"] 	= $username;
+		$data["role_type"]	= $role_type;
+		$data["role_name"] 	= $role_name;
+		$data["module"] 	= "Recovery Management";
+		$getOptRecovery = $this->ModelRecovery->getOptRecovery();
+		$input = "";
+		if($getOptRecovery){
+			$tmp = 0;
+			foreach($getOptRecovery as $key){
+				$point_id		= $key->point_id;
+				$recovery_nm	= $key->recovery_name;
+				$point			= $key->recovery_point;
+				$image			= $key->image;
+				$type_id		= $key->type_id;
+				$type_nm		= $key->recovery_type;
+				$cekPoint 	= $this->ModelRecovery->cekPoint($point_id,$username);
+			
+				if($cekPoint == $point_id){
+					$checked = "checked";
+				}else{
+					$checked = "";
+				}
+				
+				$img = '';
+				if($tmp<>$type_id){
+					$input .= "<thead><tr><th colspan='3'><img width='100%' src='".base_url()."assets/images/".$image."'/></th></tr><tr><th colspan='3'><p class='text-black'>$type_nm</p></th></tr></thead>";
+					// $input .= '
+						// <ul id="task-card" class="collection with-header">
+							// <li class="collection-item dismissable"><img width="100%" src="'.base_url().'assets/images/'.$image.'"/></li>
+							// <li class="collection-item dismissable"><p>'.$type_nm.'</p></li>
+						// </ul>
+					// ';
+					$tmp = $type_id;
+				}
+				$input.="<tbody><tr><td><input $checked type='checkbox' id='task3_$point_id' name='point[]' value='$point_id'/>"
+					. "<label for='task3_$point_id'> $recovery_nm</label> <a class='secondary-content'>"
+					. "<span class='ultra-small'>$point Pts</span></a></td></tr></tbody>";
+			}		
+		}
+		$data["ret"] = $input;
+		$data["pages"] = "createRecovery";
+		$this->load->view("layout/sidebar",$data);
+	}
+
+	function saveRecoveryDay(){
+		$username	= $this->session->userdata("sessUsername");
+		$name		= $this->session->userdata("sessName");
+		$gambar		= $this->session->userdata("sessGambar");
+		$role_type	= $this->session->userdata("sessRoleType");
+		$role_name	= $this->session->userdata("sessRoleName");
+		$group_id	= $this->session->userdata("sessGroupID");
+		
+		$point 			= $_POST["point"];
+
+		$save = $this->ModelRecovery->saveRecovery($point,$username);
+		echo $save;
+		return;
 	}
 }

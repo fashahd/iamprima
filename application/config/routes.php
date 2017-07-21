@@ -76,6 +76,8 @@ $route['filterWellness']        = 'wellness/filterWellness';
 $route['grafikWellness']        = 'wellness/grafikWellness';
 $route['createWellness']        = 'wellness/createWellness';
 $route['saveWellness'] 	        = 'wellness/saveWellness';
+$route['getWellnessCalendar']   = 'wellness/getWellnessCalendar';
+$route['getModalWellness']      = 'wellness/getModalWellness';
 
 //Training Load
 $route['monotonyData'] 	        = 'monotony/monotonyDataTable';
@@ -94,6 +96,7 @@ $route['createProfiling']     = 'performance/create';
 //Recovery Management
 $route['recovery'] 	    = 'recovery/recoveryData';
 $route['recoveryTable'] = 'recovery/recoveryTable';
+$route['createRecovery'] = 'recovery/createRecovery';
 
 //PMC
 $route['pmc'] = 'pmc/dataMonotony';

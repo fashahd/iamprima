@@ -45,26 +45,21 @@
 							<p style="margin-top:15px"><button class="btn red" onClick="wellnessGrafik()">Wellness Chart</button></p>
 						</div>
 					</div>          
-                </div>   
-				<div class="col s12 m12 l12 center">
-					<div class="col s6 m6 l6">
-						<select id="month" class="optionMid">
-							<?php echo $optBulan ?>
-						</select>
-					</div>  
-					<div class="col s6 m6 l6">
-						<select id="year" class="optionMid">
-							<?php echo $optTahun ?>
-						</select>
-					</div>
-				</div>
+                </div>
             </div>
             <!-- profile-page-sidebar-->
         </div>
 		<div class="row">
+			<div id="eventContent" title="Event Details" style="display:none;">
+				Start: <span id="startTime"></span><br>
+				End: <span id="endTime"></span><br><br>
+				<p id="eventInfo"></p>
+				<p><strong><a id="eventLink" href="" target="_blank">Read More</a></strong></p>
+			</div>
             <div class="col s12 m12 l12" id="wellnessElement">
-                <!-- Profile About  -->
-				<?php echo $wellnessData ?>
+               <div class="">
+                  <div id='wellnessCalender'></div>
+                </div>
 			</div> 
             <div class="col s12 m12 l12" id="wellnessElement2">
 			</div>

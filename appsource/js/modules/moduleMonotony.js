@@ -399,7 +399,40 @@ $("#stepOne").submit(function(event){
 	})
 });
 
-
+$("#formMonotony").submit(function(event){
+	event.preventDefault();
+    var form = $(this);
+    $.ajax({
+        type : 'POST',
+        url  : toUrl+'/monotony/saveMonotony',
+        data : form.serialize(),
+        success: function(data){
+            // alert(data);
+           if(data == "sukses"){
+                swal({
+                    title: 'Saved',
+                    text: 'Training Load Berhasil Disimpan',
+                    type: 'success',
+                    confirmButtonClass: "btn btn-success",
+                    buttonsStyling: false
+                },function(){
+					window.location.href="training";
+				});
+           }else{
+                swal({
+                    title: 'Ooops !',
+                    text: 'Check Your Connection or contact our customer service',
+                    type: 'warning',
+                    confirmButtonClass: "btn btn-warning",
+                    buttonsStyling: false
+                });
+           }
+        },error: function(xhr, ajaxOptions, thrownError){            
+            alert(xhr.responseText);
+        }
+    });	
+	
+});
 
 $("#monthMonotony").change(function(){
 	var month	= $("#monthMonotony").val();

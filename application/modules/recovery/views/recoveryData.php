@@ -29,45 +29,41 @@
 <div class="container">
     <div class="section">
         <!-- profile-page-content -->
-        <div class="row">
+		<div class="row">
             <!-- profile-page-sidebar-->
             <div class="col s12 m12 l12">
                 <!-- Profile About  -->
-                <div class="card sea-games">
-                    <figure class="card-profile-image center">
-						<div id="imgArea" class="card-avatar">
-							<img style="border: solid 5px <?php echo $wellness ?>" src="<?php echo $atletPic?>" alt="profile image" class="circle z-depth-2 responsive-img activator">
+                <div class="card sea-games center" style="height:350px">
+					<div id="imgArea" class="card-avatar">
+						<img style="border: solid 5px <?php echo $wellness ?>" src="<?php echo $atletPic?>" alt="profile image" class="circle z-depth-2 responsive-img activator">
+					</div>
+					<div class="card-content center">
+						<div class="col s12 m12 l12">
+							<p style="margin-bottom:15px"><?php echo $labelAtlet?></p>
+							<p><div class="chip cyan white-text" <?php echo $labelGroup?>><?php echo $atletGroup ?> / <?php echo $atletEvent ?></div></p>
+							<p style="margin-top:15px"><button class="btn red">Recovery Management</button></p>
 						</div>
-						<div class="card-content center">
-							<div class="col s12 m12 l12">
-								<p><?php echo $atletGroup ?> / <?php echo $atletEvent ?></p>
-								<p><button class="btn red">Recovery Management</button></p>
-							</div>
-						</div>  
-                    </figure>           
+					</div>          
                 </div>   
 				<div class="col s12 m12 l12 center">
-					<div class="col s12 m12 l12">
-						<?php echo $labelAtlet.$labelGroup ?>
-					</div>
 					<div class="col s6 m6 l6">
-						<select id="month" class="optionMid">
+						<select id="monthMonotony" class="optionMid">
 							<?php echo $optBulan ?>
 						</select>
 					</div>  
 					<div class="col s6 m6 l6">
-						<select id="year" class="optionMid">
+						<select id="yearMonotony" class="optionMid">
 							<?php echo $optTahun ?>
 						</select>
 					</div>
 				</div>
-            </div> <!-- profile-page-sidebar-->
-        </div>
+            </div>
+		</div>
 		<div class="row">
             <div class="col s12 m12 l12" id="monotonyElement">
                 <!-- Profile About  -->
 				<div class="card">
-					<table class="striped" id="monotonyTable">
+					<table class="striped bordered" id="monotonyTable">
 						<?php echo $recoveryData ?>
 					</table>
 				</div>

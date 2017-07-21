@@ -247,7 +247,7 @@ class Wellness extends MY_controller {
 		$this->load->view('layout/sidebar',$data);
 	}
 	
-	function showWellness($atletID,$month,$year){		
+	function showWellness($atletID,$month,$year){	
 		$username	= $this->session->userdata("sessUsername");
 		$name		= $this->session->userdata("sessName");
 		$gambar		= $this->session->userdata("sessGambar");
@@ -408,6 +408,88 @@ class Wellness extends MY_controller {
 			
 			echo $json;
 		}
+	}
+
+	function getWellnessCalendar(){
+		$atletID		= $this->session->userdata("sessAtlet");
+		$wellnessData	= $this->ModelWellness->getWellnessCalendar($atletID);
+		if($wellnessData){
+			$dataTable = "";
+			$no = 1;
+			$events = array();
+			foreach ($wellnessData as $key) {
+				$master_kondisi_id = $key->master_kondisi_id;
+				$date 		= date('d M Y',strtotime($key->created_dttm));
+				$lama_tidur = $key->lama_tidur;
+				$kualitas_tidur = $key->kualitas_tidur;
+				$soreness	=  $key->soreness;
+				$energi 	= $key->energi;
+				$mood 		= $key->mood;
+				$stress 	= $key->stress;
+				$mental 	= $key->mental;
+				$jml_nutrisi = $key->jml_nutrisi;
+				$kualitas_nutrisi = $key->kualitas_nutrisi;
+				$hidrasi 	= $key->hidrasi;
+				
+				$lama_tidur_clr 	= $this->getColor($lama_tidur);
+				$kualitas_tidur_clr = $this->getColor($kualitas_tidur);
+				$soreness_clr 		= $this->getColor($soreness);
+				$energi_clr 		= $this->getColor($energi);
+				$mood_clr 			= $this->getColor($mood);
+				$stress_clr 		= $this->getColor($stress);
+				$mental_clr 		= $this->getColor($mental);
+				$jml_nutrisi_clr 	= $this->getColor($jml_nutrisi);
+				$kualitas_nutrisi_clr 	= $this->getColor($kualitas_nutrisi);
+				$hidrasi_clr 		= $this->getColor($hidrasi);
+				
+				$nilai = array(
+					$lama_tidur = $key->lama_tidur * 2,
+					$kualitas_tidur = $key->kualitas_tidur * 2,
+					$soreness =  $key->soreness * 2,
+					$energi = $key->energi * 2,
+					$mood = $key->mood * 2,
+					$stress = $key->stress * 2,
+					$mental = $key->mental * 2,
+					$jml_nutrisi = $key->jml_nutrisi * 2,
+					$kualitas_nutrisi = $key->kualitas_nutrisi * 2,
+					$hidrasi = $key->hidrasi * 2
+				);
+				
+				$cidera = $key->cidera;
+				if($cidera == ""){
+					$cidera = "-";
+				}
+				
+				$total = array_sum($nilai);
+				
+				if($total <= 59){
+					$btn = "#FF0000";
+				}elseif($total >= 60 && $total <= 69) {
+					$btn = "#FF9D00";
+				}elseif($total >= 70 && $total <= 79){
+					$btn = "#E1FF00";
+				}elseif($total >= 80 && $total <= 89){
+					$btn = "#9BFF77";
+				}else{
+					$btn = "#00CE25";
+				}
+				$e = array();
+				$e['id'] = $master_kondisi_id;
+				$e['title'] = $total;
+				$e['start'] = date("Y-m-d", strtotime($key->created_dttm));
+				$e['color'] = $btn;
+
+				// Merge the event array into the return array
+				array_push($events, $e);
+
+			}
+		}
+		echo json_encode($events);
+	}
+
+	function getModalWellness(){
+		$id = $_POST["id"];
+		$data = $this->ModelWellness->getWelnessByID($id);
 	}
 	
 	function wellnessTable($atletID,$month,$year){

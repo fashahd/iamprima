@@ -33,7 +33,10 @@ where b.username =
 	}
 	
 	function getWeek(){
-		$query	= $this->db->query("SELECT * FROM d_year_weekly");
+		$now = date("Y-m-d");
+		$query	= $this->db->query("SELECT a.* FROM `d_year_weekly` as a 
+WHERE a.weekly >= WEEKOFYEAR('$now')
+LIMIT 5");
 		if($query->num_rows()>0){
 			return $query->result();
 		}else{

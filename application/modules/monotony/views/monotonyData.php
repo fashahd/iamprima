@@ -58,6 +58,7 @@
 					</div>
 				</div>
             </div>
+		</div>
 		<div class="row">
            <div class="col m12 s12 l12" id="monotonyElement">
 				<div class="card">

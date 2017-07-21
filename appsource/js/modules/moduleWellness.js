@@ -1,3 +1,52 @@
+$( document ).ready(function() {
+    $("#wellnessCalender").fullCalendar({
+		header: {
+			left: '',
+			center: 'prev title next',
+			right:''
+		},
+        eventSources: [
+			// your event source
+			{
+				url: toUrl+'/getWellnessCalendar',
+				textColor: 'black',
+				displayEventTime : false,
+			}
+			// any other sources...
+
+		],
+		eventRender: function (eventSources, element) {
+			var m_names = new Array("Jan", "Feb", "Mar", 
+			"Apr", "May", "Jun", "Jul", "Aug", "Sep", 
+			"Oct", "Nov", "Dec");
+
+			var d = new Date(eventSources.start);
+			var curr_date 	= d.getDate();
+			var curr_month 	= d.getMonth();
+			var curr_year 	= d.getFullYear();
+			var fullDate 	= curr_date +" "+m_names[curr_month]+ " " + curr_year;
+			element.attr('href', 'javascript:void(0);');
+			element.click(function() {
+				$.ajax({
+					type : 'POST',
+					url  : toUrl+"/getModalWellness",
+					data : {id:eventSources.id},
+					// dataType: "json",
+					success: function(data){
+						swal({   
+							title: "",   
+							text:  "Wellness "+fullDate+" <br> A custom html message.",   
+							html: true 
+						});
+					},error: function(xhr, ajaxOptions, thrownError){            
+						alert(xhr.responseText);
+					}
+				});
+			});
+		}
+	});
+});
+
 $("#formWellness").submit(function(event){
 	event.preventDefault();
 	

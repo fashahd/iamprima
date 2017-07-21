@@ -1,6 +1,41 @@
 <?php
 class ModelWellness extends CI_Model {
 		
+	function getWelnessByID($master_kondisi_id){
+		$sql = " SELECT * FROM v_master_kondisi WHERE master_kondisi_id = '$master_kondisi_id'"
+			 . " order by created_dttm desc";
+		
+		$query = $this->db->query($sql);
+		
+		if($query->num_rows() > 0)
+		{			
+			$row = $query->row();
+			$lama_tidur 	= $row->lama_tidur;
+			$kualitas_tidur = $row->kualitas_tidur;
+		}
+		else
+		{
+			return false;
+		}
+	}
+		
+	function getWellnessCalendar($atletID){
+		$sql = " SELECT * FROM v_master_kondisi WHERE username = '$atletID'"
+			 . " order by created_dttm desc";
+		
+		$query = $this->db->query($sql);
+		
+		if($query->num_rows() > 0)
+		{			
+			$result = $query->result();
+			return $result;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
 	function getWellness($atletID,$month,$year){
 		$sql = " SELECT * FROM v_master_kondisi WHERE username = '$atletID'"
 			 . " AND MONTH(created_dttm) = '$month'"

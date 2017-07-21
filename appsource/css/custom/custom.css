@@ -23,7 +23,16 @@
 	width: 100%;
 	color: #fff;
 }*/
+#wellnessCalender h2{
+	font-size:1.5rem;
+	text-transform:uppercase;
+	line-height:35px
+}
 
+#wellnessCalender .fc-day-header{
+	text-transform:uppercase;
+	font-weight:400
+}
 .sea-games {
 	background: center no-repeat url(../../cover/cover.jpg);
 	height: 300px;
