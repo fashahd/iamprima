@@ -534,16 +534,22 @@ class Wellness extends MY_controller {
 	}
 	
 	function getColor($data){
-		if($data == 1){
-			$btn = "#FF0000";
-		}elseif($data == 2) {
-			$btn = "#FF9D00";
-		}elseif($data == 3){
-			$btn = "#E1FF00";
-		}elseif($data == 4){
-			$btn = "#9BFF77";
-		}else{
-			$btn = "#00CE25";
+
+		switch ($data) {
+			case 1:
+				$btn = "#FF0000";
+				break;
+			case 2:
+				$btn = "#FF9D00";
+				break;
+			case 3:
+				$btn = "#E1FF00";
+				break;
+			case 4:
+				$btn = "#9BFF77";
+				break;
+			default:
+				$btn = "#00CE25";
 		}
 		
 		return $btn;
